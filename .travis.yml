@@ -5,15 +5,29 @@ branches:
 
 language: objective-c
 
+before_deploy:
+  # Set up git user name and tag this commit
+  - git config --local user.name "Nishkalkashyap"
+  - git config --local user.email "YOUR GIT USER EMAIL"
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  
+deploy:
+  provider: releases
+  api_key: 
+    secure: dKCrqRGWNb2KT3NCZEnA6WNt7aVu6WFi1I4+cc/LbwxTyHfx+ZRqFK5/xyrhWoCB3GwYHTleWGB4xAl3RnQDNbSG9YUd8PHO6Xrpx2t4HZ67WS6BzNqTxNhxS3rYpq6ci8c1+g24Jv2IWqdOPeApxuiKW8Yto9ScF2eqXH/Gv9HplEAqf57T8HpSsyVrObx0CL/DGObJYFs/LchOEvTLBpFB5KJ8DM0fNcHJS0linQPgjeTg8crpS2ehF+IKdIB9XbK/6a1w2uXloq3/30icMmEYthKAOjfISSRLaQoKFZiKf2699GoxHVF1iweZIuNayKG0cmxIY8673mRMoO5U3nXzhRwuDCWAwSa8t6rq4Hjzya19lme9F8SUNHW6bC1bBHGmelELE5dUlJq/XUmtEwZ6EU71GixzZ4JMaQbTzl3d6f08BMe3nWkF41Q4Iwfwt/y1umVw6CyypdgEwMEK5vyf+1kr9NBj0OTclm4rJJbKFOGL+8oM2ZbFfzAX0qa9hSiprUNvAnAbrfAEpVcXBbOXSdF8IyodQdBM0ZWWun8L9vdu556ptpXAhiCZ6O08RUzocU9jxFejPh4s7rF7xpY0Lem0bwWQzmp6wSfZUJTLCXwA3N44u6TXuhGBxJ6Suck2HJ1xmk4+eSaqkv2epNlw5miI9CdY8PeVJUU/2lM=
+  file_glob: true
+  file: build/**/*
+  skip_cleanup: true
+
 env:
   matrix:
 #  - NODE_VERSION="4"
 #  - NODE_VERSION="5"
 #  - NODE_VERSION="6"
 #  - NODE_VERSION="7"
-#  - NODE_VERSION="8"
+  - NODE_VERSION="8"
 #  - NODE_VERSION="9"
-  - NODE_VERSION="10"
+#  - NODE_VERSION="10"
 
 before_install:
 - brew update
