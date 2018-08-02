@@ -1,86 +1,39 @@
----
-notifications:
-  email: false
-language: cpp
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - g++-4.8
-    - g++-4.8-multilib
-    - gcc-multilib
+branches:
+  only:
+    - master
+    - /^v?[0-9]/
 
-# Build matrix
-os:
-- linux
-- osx
+language: objective-c
+
 env:
   matrix:
-  - TRAVIS_NODE_VERSION="6"
-  - TRAVIS_NODE_VERSION="6" ARCH="x86"
-  - BINARY_BUILDER="true" TRAVIS_NODE_VERSION="8"
-  - BINARY_BUILDER="true" TRAVIS_NODE_VERSION="8" ARCH="x86"
-  - TRAVIS_NODE_VERSION="9"
-  - TRAVIS_NODE_VERSION="9" ARCH="x86"
-  - TRAVIS_NODE_VERSION="10"
-matrix:
-  exclude:
-  - os: osx
-    env: TRAVIS_NODE_VERSION="6" ARCH="x86"
-  - os: osx
-    env: BINARY_BUILDER="true" TRAVIS_NODE_VERSION="8" ARCH="x86"
-  - os: osx
-    env: TRAVIS_NODE_VERSION="9" ARCH="x86"
+#  - NODE_VERSION="4"
+#  - NODE_VERSION="5"
+#  - NODE_VERSION="6"
+#  - NODE_VERSION="7"
+#  - NODE_VERSION="8"
+#  - NODE_VERSION="9"
+  - NODE_VERSION="10"
 
 before_install:
-
-# download node if testing x86 architecture
-- nvm install $TRAVIS_NODE_VERSION
-- >
-  if [[ "$ARCH" == "x86" ]]; then
-    BASE_URL=$(node -p "'https://nodejs.org/dist/' + process.version");
-    X86_FILE=$(node -p "'node-' + process.version + '-' + process.platform + '-x86'");
-    wget $BASE_URL/$X86_FILE.tar.gz;
-    tar -xf $X86_FILE.tar.gz;
-    nvm deactivate;
-    export PATH=`pwd`/$X86_FILE/bin:$PATH;
-  fi;
-# use g++-4.8 on Linux
-- if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
-- $CXX --version
-
-# Cleanup the output of npm
-- npm config set progress false
-- npm config set spin false
-
-# print versions
-- uname -a
-- which node; file `which node`
+- brew update
+- brew install nvm
+- export NVM_DIR=~/.nvm
+- source $(brew --prefix nvm)/nvm.sh
+- nvm install $NODE_VERSION
 - node --version
-- node -p 'process.platform + "@" + process.arch'
 - npm --version
 
-# figure out if we should publish
-- PUBLISH_BINARY=false
-- echo $TRAVIS_BRANCH
-- echo `git describe --tags --always HEAD`
-- if [[ $TRAVIS_BRANCH == `git describe --tags --always HEAD` ]]; then PUBLISH_BINARY=$BINARY_BUILDER; fi;
-- echo "Publishing native platform Binary Package? ->" $PUBLISH_BINARY
-
 install:
-- npm install
-- npm run build-from-source
+- export PATH=./node_modules/.bin/:$PATH
+- npm install -g node-pre-gyp-github
 
 script:
-- npm run lint
-- npm test
-
-# if publishing, do it
+- npm install --build-from-source --node-gyp=$(which pangyp)
+- "./node_modules/.bin/node-pre-gyp package"
+- echo $TRAVIS_TAG
+- echo $TRAVIS_PULL_REQUEST
 - >
-  if [[ $PUBLISH_BINARY == true ]]; then
-    echo "building and uploading binaries"
-    npm run prebuild-upload;
-  fi;
-after_success:
-- npm run coverage
+    ([[ "$TRAVIS_TAG" =~ ^v?[0-9] ]] &&
+    test "$TRAVIS_PULL_REQUEST" = false &&
+    node-pre-gyp-github publish) || true
