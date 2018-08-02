@@ -8,9 +8,9 @@ language: objective-c
 before_deploy:
   # Set up git user name and tag this commit
   - git config --local user.name "Nishkalkashyap"
-  - git config --local user.email "YOUR GIT USER EMAIL"
+  - git config --local user.email "kashyapnishkal@gmail.com"
   - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
-  
+
 deploy:
   provider: releases
   api_key: 
