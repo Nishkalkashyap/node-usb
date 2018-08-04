@@ -9,36 +9,21 @@
     "usb",
     "hardware"
   ],
-  "contributors": [
-    {
-      "name": "Kevin Mehall",
-      "email": "km@kevinmehall.net",
-      "url": "http://kevinmehall.net"
-    },
-    {
-      "name": "Tim Ryan",
-      "email": "tim@technical.io",
-      "url": "http://timryan.org"
-    },
-    {
-      "name": "Christopher Klein"
-    }
-  ],
   "main": "./usb",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tessel/node-usb.git"
+    "url": "https://github.com/Nishkalkashyap/node-usb"
   },
   "scripts": {
-    "install": "node-pre-gyp install --fallback-to-build",
-    "test": "mocha --compilers coffee:coffee-script --grep Module",
-    "full-test": "mocha --compilers coffee:coffee-script",
-    "valgrind": "coffee -c test/usb.coffee; valgrind --leak-check=full --show-possibly-lost=no node --expose-gc --trace-gc node_modules/mocha/bin/_mocha -R spec"
+    "install": "prebuild --install",
+    "prebuild": "prebuild --all --strip --verbose",
+    "rebuild": "prebuild --compile",
+    "prebuild-upload": "prebuild --upload-all $TOKEN"
   },
   "binary": {
     "module_name": "usb_bindings",
     "module_path": "./src/binding",
-    "host": "https://github.com/tessel/node-usb/releases/download/",
+    "host": "https://github.com/Nishkalkashyap/node-usb/releases/download/",
     "remote_path": "{version}"
   },
   "dependencies": {
@@ -47,8 +32,8 @@
   },
   "devDependencies": {
     "coffee-script": "~1.6.2",
-    "mocha": "~1.8.2",
-    "aws-sdk": "~2.0.0-rc.15"
+    "aws-sdk": "~2.0.0-rc.15",
+    "mocha": "^5.2.0"
   },
   "license": "MIT"
 }

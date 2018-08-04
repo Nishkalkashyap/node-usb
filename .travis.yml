@@ -1,55 +1,79 @@
-branches:
-  only:
-    - master
-    - /^v?[0-9]/
+---
+notifications:
+  email: false
+language: cpp
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+    - g++-4.8-multilib
+    - gcc-multilib
 
-language: objective-c
-
-before_deploy:
-  # Set up git user name and tag this commit
-  - git config --local user.name "Nishkalkashyap"
-  - git config --local user.email "kashyapnishkal@gmail.com"
-  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
-
-deploy:
-  provider: releases
-  api_key: 
-    secure: dKCrqRGWNb2KT3NCZEnA6WNt7aVu6WFi1I4+cc/LbwxTyHfx+ZRqFK5/xyrhWoCB3GwYHTleWGB4xAl3RnQDNbSG9YUd8PHO6Xrpx2t4HZ67WS6BzNqTxNhxS3rYpq6ci8c1+g24Jv2IWqdOPeApxuiKW8Yto9ScF2eqXH/Gv9HplEAqf57T8HpSsyVrObx0CL/DGObJYFs/LchOEvTLBpFB5KJ8DM0fNcHJS0linQPgjeTg8crpS2ehF+IKdIB9XbK/6a1w2uXloq3/30icMmEYthKAOjfISSRLaQoKFZiKf2699GoxHVF1iweZIuNayKG0cmxIY8673mRMoO5U3nXzhRwuDCWAwSa8t6rq4Hjzya19lme9F8SUNHW6bC1bBHGmelELE5dUlJq/XUmtEwZ6EU71GixzZ4JMaQbTzl3d6f08BMe3nWkF41Q4Iwfwt/y1umVw6CyypdgEwMEK5vyf+1kr9NBj0OTclm4rJJbKFOGL+8oM2ZbFfzAX0qa9hSiprUNvAnAbrfAEpVcXBbOXSdF8IyodQdBM0ZWWun8L9vdu556ptpXAhiCZ6O08RUzocU9jxFejPh4s7rF7xpY0Lem0bwWQzmp6wSfZUJTLCXwA3N44u6TXuhGBxJ6Suck2HJ1xmk4+eSaqkv2epNlw5miI9CdY8PeVJUU/2lM=
-  file: build.tar
-  skip_cleanup: true
-
+# Build matrix
+os:
+- linux
+- osx
 env:
   matrix:
-#  - NODE_VERSION="4"
-#  - NODE_VERSION="5"
-#  - NODE_VERSION="6"
-#  - NODE_VERSION="7"
-  - NODE_VERSION="8"
-#  - NODE_VERSION="9"
-#  - NODE_VERSION="10"
+  - TRAVIS_NODE_VERSION="6"
+  - TRAVIS_NODE_VERSION="6" ARCH="x86"
+  - BINARY_BUILDER="true" TRAVIS_NODE_VERSION="8"
+  - BINARY_BUILDER="true" TRAVIS_NODE_VERSION="8" ARCH="x86"
+  - TRAVIS_NODE_VERSION="9"
+  - TRAVIS_NODE_VERSION="9" ARCH="x86"
+  - TRAVIS_NODE_VERSION="10"
+matrix:
+  exclude:
+  - os: osx
+    env: TRAVIS_NODE_VERSION="6" ARCH="x86"
+  - os: osx
+    env: BINARY_BUILDER="true" TRAVIS_NODE_VERSION="8" ARCH="x86"
+  - os: osx
+    env: TRAVIS_NODE_VERSION="9" ARCH="x86"
 
 before_install:
-- brew update
-- brew install nvm
-- export NVM_DIR=~/.nvm
-- source $(brew --prefix nvm)/nvm.sh
-- nvm install $NODE_VERSION
+
+# download node if testing x86 architecture
+- nvm install $TRAVIS_NODE_VERSION
+- >
+  if [[ "$ARCH" == "x86" ]]; then
+    BASE_URL=$(node -p "'https://nodejs.org/dist/' + process.version");
+    X86_FILE=$(node -p "'node-' + process.version + '-' + process.platform + '-x86'");
+    wget $BASE_URL/$X86_FILE.tar.gz;
+    tar -xf $X86_FILE.tar.gz;
+    nvm deactivate;
+    export PATH=`pwd`/$X86_FILE/bin:$PATH;
+  fi;
+# use g++-4.8 on Linux
+- if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
+- $CXX --version
+
+# Cleanup the output of npm
+- npm config set progress false
+- npm config set spin false
+
+# print versions
+- uname -a
+- which node; file `which node`
 - node --version
+- node -p 'process.platform + "@" + process.arch'
 - npm --version
 
+# figure out if we should publish
+- PUBLISH_BINARY=false
+- echo "Publishing native platform Binary Package? ->" $PUBLISH_BINARY
+
 install:
-- export PATH=./node_modules/.bin/:$PATH
-- npm install -g node-pre-gyp-github
+- npm install
 
 script:
-- npm install --build-from-source --node-gyp=$(which pangyp)
-- "./node_modules/.bin/node-pre-gyp package"
-- echo $TRAVIS_TAG
-- echo $TRAVIS_PULL_REQUEST
-- >
-    ([[ "$TRAVIS_TAG" =~ ^v?[0-9] ]] &&
-    test "$TRAVIS_PULL_REQUEST" = false &&
-    node-pre-gyp-github publish) || true
+- npm test
 
-after_script:
-- tar -cvf build.tar ./build
+# if publishing, do it
+- >
+  if [[ $PUBLISH_BINARY == true ]]; then
+    echo "building and uploading binaries"
+    npm run prebuild-upload;
+  fi;
