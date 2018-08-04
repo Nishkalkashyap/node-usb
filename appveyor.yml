@@ -1,0 +1,63 @@
+# os: unstable
+# environment:
+#   TOKEN:
+#     secure: uDNVKaQ7R1j5BG4q2RmY5TpV6NjB8jNGhC550uRzJ0UYB/ayK4H4lm7ORI/bY0NV
+#   PUBLISH_BINARY: true
+#   GYP_MSVS_VERSION: 2013
+
+#   matrix:
+#     # - node_version: '4'
+#     # - node_version: '5'
+#     # - node_version: '6'
+#     - node_version: '7'
+#       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#       GYP_MSVS_VERSION: 2015
+#     - node_version: '8'
+#       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#       GYP_MSVS_VERSION: 2015
+#     - node_version: '9'
+#       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#       GYP_MSVS_VERSION: 2015
+#     - node_version: '10'
+#       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+#       GYP_MSVS_VERSION: 2017
+
+# platform:
+# # - x86
+# - x64
+
+# install:
+# # - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version) $env:platform;
+# - ps: Install-Product node $env:node_version $env:platform
+# - npm install -g node-gyp node-pre-gyp-github
+#   # This fixes an issue with Node 4.x on x86. If it builds without this line
+#   # needing to be set, we can remove it.
+# - ps: npm config -g set node-gyp "$(npm config -g get prefix)\node_modules\node-gyp\bin\node-gyp.js"
+
+
+# - ps: >
+#     npm config set progress false
+#     npm config set spin false
+
+
+# build_script:
+# - ps: echo $env:PUBLISH_BINARY
+# - git submodule update --init
+# - npm install
+# - ps: >
+#     if ($env:PUBLISH_BINARY -eq "true") {
+#       npm run prebuild-upload-app
+#     }
+#     true;
+
+# deploy:
+#   release: myproduct-v$(appveyor_build_version)
+#   description: 'Release description'
+#   provider: GitHub
+#   auth_token: 
+#      secure: uDNVKaQ7R1j5BG4q2RmY5TpV6NjB8jNGhC550uRzJ0UYB/ayK4H4lm7ORI/bY0NV
+#   artifact: prebuilds.tar
+#   draft: false
+#   prerelease: false
+#   on:
+#     branch: master

@@ -1,0 +1,36 @@
+{
+  "name": "prebuilt-usb",
+  "description": "Library to access USB devices. This package provides prebuilt binaries of the original tessel/node-usb library.  Learn more about it here : https://github.com/tessel/node-usb  ",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=0.12.x"
+  },
+  "keywords": [
+    "usb",
+    "hardware"
+  ],
+  "main": "./usb",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nishkalkashyap/node-usb"
+  },
+  "scripts": {
+    "install": "prebuild --install",
+    "prebuild-upload": "prebuild --upload-all $TOKEN",
+    "prebuild-all": "prebuild --all"
+  },
+  "binary": {
+    "module_name": "usb_bindings",
+    "module_path": "./src/binding",
+    "host": "https://github.com/Nishkalkashyap/node-usb/releases/download/",
+    "remote_path": "{version}"
+  },
+  "dependencies": {
+    "nan": "^2.8.0",
+    "node-pre-gyp": "^0.10.0"
+  },
+  "devDependencies": {
+    "prebuild": "^7.6.1"
+  },
+  "license": "MIT"
+}

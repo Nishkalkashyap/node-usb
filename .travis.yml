@@ -1,0 +1,82 @@
+---
+notifications:
+  email: false
+language: cpp
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+    - g++-4.8-multilib
+    - gcc-multilib
+    - libudev-dev
+
+# Build matrix
+os:
+- linux
+- osx
+env:
+  matrix:
+  # - TRAVIS_NODE_VERSION="6"
+  - TRAVIS_NODE_VERSION="6" ARCH="x86"
+  # - TRAVIS_NODE_VERSION="8"
+  # - TRAVIS_NODE_VERSION="8" ARCH="x86"
+  # - TRAVIS_NODE_VERSION="9"
+  - TRAVIS_NODE_VERSION="9" ARCH="x86"
+  - TRAVIS_NODE_VERSION="10"
+matrix:
+  exclude:
+  - os: osx
+    env: TRAVIS_NODE_VERSION="6" ARCH="x86"
+  - os: osx
+    env: BINARY_BUILDER="true" TRAVIS_NODE_VERSION="8" ARCH="x86"
+  - os: osx
+    env: TRAVIS_NODE_VERSION="9" ARCH="x86"
+
+before_install:
+
+# download node if testing x86 architecture
+- nvm install $TRAVIS_NODE_VERSION
+- >
+  if [[ "$ARCH" == "x86" ]]; then
+    BASE_URL=$(node -p "'https://nodejs.org/dist/' + process.version");
+    X86_FILE=$(node -p "'node-' + process.version + '-' + process.platform + '-x86'");
+    wget $BASE_URL/$X86_FILE.tar.gz;
+    tar -xf $X86_FILE.tar.gz;
+    nvm deactivate;
+    export PATH=`pwd`/$X86_FILE/bin:$PATH;
+  fi;
+# use g++-4.8 on Linux
+- if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
+- $CXX --version
+
+# Cleanup the output of npm
+- npm config set progress false
+- npm config set spin false
+
+# print versions
+- uname -a
+- which node; file `which node`
+- node --version
+- node -p 'process.platform + "@" + process.arch'
+- npm --version
+
+# figure out if we should publish
+- PUBLISH_BINARY=true
+- echo "Publishing native platform Binary Package? ->" $PUBLISH_BINARY
+
+install:
+- npm install
+- ls -lah
+
+script:
+# - npm test
+
+# if publishing, do it
+- >
+  if [[ $PUBLISH_BINARY == true ]]; then
+    echo "building and uploading binaries"
+    npm run prebuild-all;
+    npm run prebuild-upload;
+  fi;
