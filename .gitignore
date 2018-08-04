@@ -2,5 +2,5 @@ build/*
 node_modules
 *~
 *.log
-src/binding/*
-/prebuilds
+# src/binding/*
+# /prebuilds
