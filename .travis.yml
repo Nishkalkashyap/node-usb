@@ -15,16 +15,16 @@ addons:
 # Build matrix
 os:
 - linux
-#- osx
+- osx
 env:
   matrix:
-  # - TRAVIS_NODE_VERSION="6"
-  # - TRAVIS_NODE_VERSION="6" ARCH="x86"
+  - TRAVIS_NODE_VERSION="6"
+  - TRAVIS_NODE_VERSION="6" ARCH="x86"
   - TRAVIS_NODE_VERSION="8"
-  # - TRAVIS_NODE_VERSION="8" ARCH="x86"
-  # - TRAVIS_NODE_VERSION="9"
-  # - TRAVIS_NODE_VERSION="9" ARCH="x86"
-  # - TRAVIS_NODE_VERSION="10"
+  - TRAVIS_NODE_VERSION="8" ARCH="x86"
+  - TRAVIS_NODE_VERSION="9"
+  - TRAVIS_NODE_VERSION="9" ARCH="x86"
+  - TRAVIS_NODE_VERSION="10"
 matrix:
   exclude:
   - os: osx

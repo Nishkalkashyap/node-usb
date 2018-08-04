@@ -1,7 +1,7 @@
 {
-  "name": "usb",
-  "description": "Library to access USB devices",
-  "version": "1.3.2",
+  "name": "prebuilt-usb",
+  "description": "Library to access USB devices. This package provides prebuilt binaries of the original tessel/node-usb package. Learn more about it here : https://github.com/tessel/node-usb  ",
+  "version": "0.0.1",
   "engines": {
     "node": ">=0.12.x"
   },
