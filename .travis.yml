@@ -63,14 +63,15 @@ before_install:
 - npm --version
 
 # figure out if we should publish
-- PUBLISH_BINARY=false
+- PUBLISH_BINARY=true
 - echo "Publishing native platform Binary Package? ->" $PUBLISH_BINARY
 
 install:
 - npm install
+- ls -lah
 
 script:
-- npm test
+# - npm test
 
 # if publishing, do it
 - >
