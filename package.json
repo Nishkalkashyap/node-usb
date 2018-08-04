@@ -22,7 +22,7 @@
   "binary": {
     "module_name": "usb_bindings",
     "module_path": "./src/binding",
-    "host": "https://github.com/Nishkalkashyap/node-usb/releases/download/",
+    "host": "https://github.com/Nishkalkashyap/node-usb/releases",
     "remote_path": "{version}"
   },
   "dependencies": {
