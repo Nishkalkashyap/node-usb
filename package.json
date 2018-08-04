@@ -1,7 +1,7 @@
 {
   "name": "prebuilt-usb",
   "description": "Library to access USB devices. This package provides prebuilt binaries of the original tessel/node-usb library.  Learn more about it here : https://github.com/tessel/node-usb  ",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "engines": {
     "node": ">=0.12.x"
   },
@@ -11,13 +11,15 @@
   ],
   "main": "./usb",
   "gypfile": true,
+  "homepage": "https://github.com/creationix/node-gamepad",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Nishkalkashyap/node-usb.git"
+    "url": "https://github.com/Nishkalkashyap/node-usb.git"
   },
   "scripts": {
     "install": "prebuild-install || node-gyp rebuild",
     "rebuild": "prebuild --compile",
+    "prebuild": "prebuild --all --strip --verbose",
     "prebuild-upload": "prebuild --upload-all $TOKEN",
     "prebuild-all": "prebuild --all"
   },
@@ -28,6 +30,7 @@
     "remote_path": "{version}"
   },
   "dependencies": {
+    "bindings": "^1.3.0",
     "nan": "^2.8.0",
     "node-pre-gyp": "^0.10.0",
     "prebuild-install": "^5.0.0"
