@@ -27,13 +27,14 @@
     "remote_path": "{version}"
   },
   "dependencies": {
-    "nan": "^2.8.0",
-    "node-pre-gyp": "^0.10.0"
   },
   "devDependencies": {
     "coffee-script": "~1.6.2",
     "aws-sdk": "~2.0.0-rc.15",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nan": "^2.8.0",
+    "node-pre-gyp": "^0.10.0",
+    "prebuild": "^7.6.1"
   },
   "license": "MIT"
 }
