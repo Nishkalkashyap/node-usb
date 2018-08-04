@@ -10,7 +10,7 @@ addons:
     - g++-4.8
     - g++-4.8-multilib
     - gcc-multilib
-    - libudev
+    - libudev-dev
 
 # Build matrix
 os:
