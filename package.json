@@ -14,10 +14,9 @@
   "homepage": "https://github.com/creationix/node-gamepad",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Nishkalkashyap/node-usb.git"
+    "url": "https://github.com/Nishkalkashyap/node-usb.git",
   },
   "scripts": {
-    // "install": "prebuild-install || node-gyp rebuild",
     "install": "prebuild --install",
     "rebuild": "prebuild --compile",
     "prebuild": "prebuild --all --strip --verbose",
