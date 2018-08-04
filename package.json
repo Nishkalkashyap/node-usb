@@ -15,7 +15,7 @@
     "url": "https://github.com/Nishkalkashyap/node-usb"
   },
   "scripts": {
-    "install": "prebuild --install",
+    "install": "prebuild-install || node-gyp rebuild",
     "prebuild-upload": "prebuild --upload-all $TOKEN",
     "prebuild-all": "prebuild --all"
   },

@@ -11,6 +11,7 @@ addons:
     - g++-4.8-multilib
     - gcc-multilib
     - libudev-dev
+if: tag IS present
 
 # Build matrix
 os:
