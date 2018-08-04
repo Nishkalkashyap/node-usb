@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Nishkalkashyap/node-usb.svg?branch=master)](https://travis-ci.org/Nishkalkashyap/node-usb)
 NOTE:
 ===============================
 This is a fork of the original repo node-usb by tessel on github https://github.com/tessel/node-usb. 
